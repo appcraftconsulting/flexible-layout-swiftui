@@ -28,8 +28,8 @@ struct ContentView: View {
                             .frame(width: item.width * widthFactor, height: height)
                     }
                 }
-                .animation(.default, value: widthFactor)
-                .animation(.default, value: height)
+                .animation(.spring(), value: widthFactor)
+                .animation(.spring(), value: height)
                 .padding()
             }
             
