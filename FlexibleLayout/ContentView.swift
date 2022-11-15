@@ -46,7 +46,6 @@ struct ContentView: View {
                     .padding()
                 }
             }
-
             
             Divider()
             
