@@ -15,23 +15,38 @@ struct ContentView: View {
     
     @State private var widthFactor: CGFloat = 1.0
     @State private var height: CGFloat = 20
+    @State private var selectedId: Int? = nil
     
-    private let items: [Item] = (0...100).map { .init(id: $0, width: .random(in: 20...50)) }
+    private let items: [Item] = (0...1000).map { .init(id: $0, width: .random(in: 20...50)) }
     
     var body: some View {
         VStack(spacing: 0) {
-            ScrollView {
-                FlexibleLayout(horizontalSpacing: 6, verticalSpacing: 12) {
-                    ForEach(items) { item in
-                        RoundedRectangle(cornerRadius: 6, style: .continuous)
-                            .fill(.teal)
-                            .frame(width: item.width * widthFactor, height: height)
+            ScrollViewReader { proxy in
+                ScrollView(.vertical) {
+                    FlexibleLayout(horizontalSpacing: 6, verticalSpacing: 12) {
+                        ForEach(items) { item in
+                            Button {
+                                selectedId = item.id
+                            } label: {
+                                RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                    .fill(item.id == selectedId ? .green : .teal)
+                                    .frame(width: item.width * widthFactor, height: height)
+                            }
+                            .id(item.id)
+                        }
                     }
+                    .onChange(of: selectedId) { id in
+                        withAnimation {
+                            proxy.scrollTo(selectedId, anchor: .center)
+                        }
+                    }
+                    .animation(.spring(), value: widthFactor)
+                    .animation(.spring(), value: height)
+                    .animation(.spring(), value: selectedId)
+                    .padding()
                 }
-                .animation(.spring(), value: widthFactor)
-                .animation(.spring(), value: height)
-                .padding()
             }
+
             
             Divider()
             
